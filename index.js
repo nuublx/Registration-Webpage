@@ -50,23 +50,101 @@ phoneNumber.addEventListener("blur", function () {
 
   if (result == -1) {
     errorMessage.textContent =
-      "Input must be at least 11 characters long and at most 15 characters long.";
+      "Input must be at least 11 characters long and at most 15 characters long!!";
     errorMessage.style.color = "red";
     errorMessage.style.font = "14px";
   } else if (result == -2) {
-    errorMessage.textContent = "Input must be digits only.";
+    errorMessage.textContent = "Input must be digits only!!";
     errorMessage.style.color = "red";
     errorMessage.style.font = "14px";
   }
+  // check if an error message already appeared
+  if (document.getElementById("phone_error")) {
+    document.getElementById("phone_error").remove();
+  }
   if (result != 1) {
-    // check if an error message already appeared
-    if (document.getElementById("phone_error")) {
-      document.getElementById("phone_error").remove();
-    }
-
     errorMessage.id = "phone_error";
     document
       .getElementById("phoneNumber")
       .insertBefore(errorMessage, phoneNumber.previousSibling);
+  }
+});
+
+// validating full name
+
+const fullName = document.getElementById("full_name");
+
+const check_fullName = function (fullName) {
+  for (let i = 0; i < fullName.length; i++) {
+    if (fullName[i] == " ") continue;
+    const charCode = fullName.charCodeAt(i);
+    if (
+      !(charCode > 64 && charCode < 91) &&
+      !(charCode > 96 && charCode < 123)
+    ) {
+      return false;
+    }
+  }
+  return true;
+};
+
+fullName.addEventListener("blur", function () {
+  const userInput = fullName.value;
+  debugger;
+  if (!check_fullName(userInput)) {
+    const errorMessage = document.createElement("p");
+    errorMessage.style.color = "red";
+    errorMessage.style.font = "14px";
+    errorMessage.textContent = "Input must be all alphabet letters !!";
+
+    // check if an error message already appeared
+    if (document.getElementById("full_name_error")) {
+      document.getElementById("full_name_error").remove();
+    }
+
+    errorMessage.id = "full_name_error";
+    document
+      .getElementById("fullName")
+      .insertBefore(errorMessage, fullName.previousSibling);
+  } else {
+    // check if an error message already appeared
+    if (document.getElementById("full_name_error")) {
+      document.getElementById("full_name_error").remove();
+    }
+  }
+});
+
+// validate email address
+
+function validateEmail(email) {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(email);
+}
+
+const emailAddress = document.getElementById("email");
+
+emailAddress.addEventListener("blur", function () {
+  const userInput = emailAddress.value;
+  debugger;
+  if (!validateEmail(userInput)) {
+    const errorMessage = document.createElement("p");
+    errorMessage.style.color = "red";
+    errorMessage.style.font = "14px";
+    errorMessage.textContent = "Email is invalid!!";
+
+    // check if an error message already appeared
+    if (document.getElementById("email_error")) {
+      document.getElementById("email_error").remove();
+    }
+
+    errorMessage.id = "email_error";
+    document
+      .getElementById("Email")
+      .insertBefore(errorMessage, emailAddress.previousSibling);
+  } else {
+    // check if an error message already appeared
+    if (document.getElementById("email_error")) {
+      document.getElementById("email_error").remove();
+    }
   }
 });
