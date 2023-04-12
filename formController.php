@@ -1,6 +1,7 @@
-<?php 
+<?php
 require 'UserRepository.php';
-function process_registration_form() {
+function process_registration_form()
+{
     $db = new UserRepository();
 
     $user_id = uniqid("USR");
@@ -18,27 +19,37 @@ function process_registration_form() {
     $result = $db->create($user_id, $user_name, $full_name, $birth_date, $phone, $address, $user_image, $email, $password, $createdAt);
 
     if ($result) {
-        echo json_encode(array('message' => "User added successfully"));
-    }
-    else {
-        echo json_encode(array('error' => "User already"));
+        $date_parts = explode("-", $birth_date);
+
+        $message = "User added successfully";
+
+        $data = array(
+            "message" => $message,
+        );
+
+        echo json_encode($data);
+
+    } else {
+        echo json_encode(array('error' => "User already exist"));
     }
 }
-function process_image($user_id, $createdAt) {
+function process_image($user_id, $createdAt)
+{
     $fileName = $_FILES['user_image']['name'];
     $fileTemp = $_FILES['user_image']['tmp_name'];
 
     $exp = explode(".", $fileName);
     $extension = end($exp);
 
-    $newFileName = $user_id . $createdAt ."." . $extension;
-    
-    $target = __DIR__."//uploads//"."/".$newFileName;
+    $newFileName = $user_id . $createdAt . "." . $extension;
+
+    $target = __DIR__ . "//uploads//" . "/" . $newFileName;
 
     if (move_uploaded_file($fileTemp, $target))
         return $newFileName;
 }
-if($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     process_registration_form();
 }
 

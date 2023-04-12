@@ -1,9 +1,10 @@
-
 <html>
+
 <head>
 	<title>Registration Form</title>
 	<link rel="stylesheet" type="text/css" href="index.css">
 </head>
+
 <body>
 	<form id="my-form">
 		<div id="fullName">
@@ -15,10 +16,17 @@
 			<label for="user_name">User Name:</label>
 			<input type="text" id="user_name" name="user_name" required>
 		</div>
+
+
+		<div id="birthdate-error"></div>
 		<div id="birthDate">
 			<label for="birthdate">Birthdate:</label>
 			<input type="date" id="birthdate" name="birth_date" required>
+			<button onclick="getActors()">Actors Born</button>
 		</div>
+
+		<!-- <div id="actors"></div> -->
+
 		<div id="phoneNumber">
 			<label for="phone">Phone:</label>
 			<input type="tel" id="phone" name="phone" required>
@@ -48,6 +56,7 @@
 		</div>
 	</form>
 
-    <script src="index.js"></script>
+	<script src="index.js"></script>
 </body>
+
 </html>
