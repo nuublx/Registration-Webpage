@@ -1,3 +1,5 @@
+<!-- “API_Ops.php”: will include all the necessary code to connect to the API -->
+
 <?php
 
 function getActorsIDs($month, $day)

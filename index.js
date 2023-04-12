@@ -48,7 +48,7 @@ const getActors = function () {
     var day = date.getDate();
     console.log(month);
 
-    var url = "APICallingController.php?month=" + month + "&day=" + day;
+    var url = "API_Ops.php?month=" + month + "&day=" + day;
 
     let path = "popup.html";
     let HTMLurl = window.location.href + path;
@@ -101,11 +101,11 @@ phoneNumber.addEventListener("blur", function () {
 
   if (result == -1) {
     errorMessage.textContent =
-      "Input must be at least 11 characters long and at most 15 characters long!!";
+      "Input must be at least 11 characters long and at most 15 characters long";
     errorMessage.style.color = "red";
     errorMessage.style.font = "14px";
   } else if (result == -2) {
-    errorMessage.textContent = "Input must be digits only!!";
+    errorMessage.textContent = "Input must be digits only";
     errorMessage.style.color = "red";
     errorMessage.style.font = "14px";
   }
@@ -146,7 +146,7 @@ fullName.addEventListener("blur", function () {
     const errorMessage = document.createElement("p");
     errorMessage.style.color = "red";
     errorMessage.style.font = "14px";
-    errorMessage.textContent = "Input must be all alphabet letters !!";
+    errorMessage.textContent = "Input must be all alphabet letters";
 
     // check if an error message already appeared
     if (document.getElementById("full_name_error")) {
@@ -181,7 +181,7 @@ emailAddress.addEventListener("blur", function () {
     const errorMessage = document.createElement("p");
     errorMessage.style.color = "red";
     errorMessage.style.font = "14px";
-    errorMessage.textContent = "Email is invalid!!";
+    errorMessage.textContent = "Email is invalid";
 
     // check if an error message already appeared
     if (document.getElementById("email_error")) {

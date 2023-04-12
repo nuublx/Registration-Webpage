@@ -56,3 +56,8 @@ input[type="submit"]:hover {
 #birthdate {
   margin-bottom: 10px;
 }
+
+span.required {
+  color: red;
+  margin-left: 5px;
+}
