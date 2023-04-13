@@ -2,11 +2,15 @@
 
 <head>
 	<title>Registration Form</title>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+	<script src="js/bootstrap.bundle.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="index.css">
 
 </head>
 
 <body>
+	<div id = "notify"></div>
+	</div>
 	<form id="my-form">
 		<div id="fullName">
 			<label for="full_name">Full Name<span class="required">*</span></label>
@@ -58,6 +62,7 @@
 	</form>
 
 	<script src="index.js"></script>
+
 </body>
 
 </html>

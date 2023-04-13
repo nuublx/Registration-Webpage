@@ -1,4 +1,3 @@
-<!-- DB_Ops.php”: will include your DB functions -->
 
 <?php
 class UserRepository

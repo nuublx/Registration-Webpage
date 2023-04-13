@@ -17,7 +17,7 @@ function process_registration_form()
     $email = $_POST['email'];
 
     $user_image = process_image($user_id, $createdAt);
-    $result = $db->create($user_id, $user_name, $full_name, $birth_date, $phone, $address, $user_image, $email, $password, $createdAt);
+    $result = $db->create($user_id, $user_name, $full_name, $birth_date, $phone, $address, $user_image, $email, $password);
 
     if ($result) {
         $date_parts = explode("-", $birth_date);

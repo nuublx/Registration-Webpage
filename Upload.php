@@ -1,4 +1,3 @@
-<!-- . “Upload.php”: will include your code for processing the uploaded image. -->
 <?php
 function process_image($user_id, $createdAt)
 {

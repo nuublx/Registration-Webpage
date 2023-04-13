@@ -5,7 +5,8 @@
 1)
 make phone input take + in the first character
 and allow spaces between numbers maximum one space between two digits
-2)
+2) show a notification if the user already exist
+or the user has registered successfully.
 */
 const submitForm = function () {
   const form = document.getElementById("my-form");
@@ -19,9 +20,12 @@ const submitForm = function () {
   xhr.onload = function () {
     if (xhr.status === 200) {
       let resp = JSON.parse(xhr.response);
+      let notify = document.getElementById("notify");
       if (resp["error"] == null) {
-        console.log(resp["message"]);
-      } else console.log(resp["error"]);
+        notify.innerHTML = `<div class="alert alert-success alert-dismissible fade show" role="alert" style="width:30%;">User registered successfully!<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+      } else
+        notify.innerHTML = `<div class="alert alert-danger alert-dismissible fade show" role="alert" style="width:30%;">Username already exist!<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+
       // do something with the response
     }
   };
@@ -90,8 +94,12 @@ const check_phoneNumber = function (phoneNumber) {
   let response = 1;
   if (phoneNumber.length < 11 || phoneNumber.length > 15) response = -1;
 
-  for (let i = 0; i < phoneNumber.length; i++) {
-    if (phoneNumber[i] < "0" || phoneNumber > "9") {
+  if ((phoneNumber[0] != "+" && phoneNumber[0] < "0") || phoneNumber[0] > "9") {
+    response = -2;
+  }
+
+  for (let i = 1; i < phoneNumber.length; i++) {
+    if (phoneNumber[i] < "0" || phoneNumber[i] > "9") {
       response = -2;
       break;
     }
