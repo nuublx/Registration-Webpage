@@ -15,7 +15,7 @@ function process_registration_form() {
     $email = $_POST['email'];
 
     $user_image = process_image($user_id, $createdAt);
-    $result = $db->create($user_id, $user_name, $full_name, $birth_date, $phone, $address, $user_image, $email, $password, $createdAt);
+    $result = $db->create($user_id, $user_name, $full_name, $birth_date, $phone, $address, $user_image, $email, $password);
 
     if ($result) {
         echo json_encode(array('message' => "User added successfully"));

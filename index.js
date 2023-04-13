@@ -1,6 +1,12 @@
 "use strict";
 // function that handles the submission of the form using ajax request
-
+//TODO
+/*
+1)
+make phone input take + in the first character
+and allow spaces between numbers maximum one space between two digits
+2)
+*/
 const submitForm = function () {
   const form = document.getElementById("my-form");
   event.preventDefault(); // prevent the form from submitting normally
