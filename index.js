@@ -105,6 +105,8 @@ const submitForm = function () {
 };
 
 const getActors = function () {
+  event.preventDefault(); // prevent the form from submitting normally
+
   var xhttp = new XMLHttpRequest();
 
   if (birthValidation()) {
