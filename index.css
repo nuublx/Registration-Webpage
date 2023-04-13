@@ -1,5 +1,6 @@
 form {
-  margin: 0 auto;
+  z-index: 1;
+  margin: 30 auto;
   width: 50%;
   border: 1px solid #ccc;
   padding: 20px;

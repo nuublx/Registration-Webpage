@@ -8,6 +8,76 @@ and allow spaces between numbers maximum one space between two digits
 2) show a notification if the user already exist
 or the user has registered successfully.
 */
+const fullName = document.getElementById("full_name");
+const phoneNumber = document.getElementById("phone");
+const emailAddress = document.getElementById("email");
+const birthdate = document.getElementById("birthdate");
+
+const switchButton = function (choice) {
+  const myButton = document.getElementById("submit");
+  if (choice == 1) myButton.disabled = false;
+  if (choice == 0) myButton.disabled = true;
+};
+
+const check_fullName = function () {
+  const fullName = document.getElementById("full_name").value;
+  let name_is_spaces = true;
+  for (let i = 0; i < fullName.length; i++) {
+    if (fullName[i] == " ") continue;
+
+    const charCode = fullName.charCodeAt(i);
+
+    if (
+      !(charCode > 64 && charCode < 91) &&
+      !(charCode > 96 && charCode < 123)
+    ) {
+      return false;
+    }
+
+    // if the fullname was all spaces execution won't reach here
+    name_is_spaces = false;
+  }
+
+  if (name_is_spaces) {
+    return false;
+  }
+
+  return true;
+};
+
+const birthValidation = function () {
+  const birthdate = document.getElementById("birthdate").value;
+  if (birthdate.trim() === "") {
+    return false;
+  }
+  return true;
+};
+
+const check_phoneNumber = function () {
+  const phoneNumber = document.getElementById("phone").value;
+  let response = 1;
+  if (phoneNumber.length < 11 || phoneNumber.length > 15) response = -1;
+
+  if ((phoneNumber[0] != "+" && phoneNumber[0] < "0") || phoneNumber[0] > "9") {
+    response = -2;
+  }
+
+  for (let i = 1; i < phoneNumber.length; i++) {
+    if (phoneNumber[i] < "0" || phoneNumber[i] > "9") {
+      response = -2;
+      break;
+    }
+  }
+
+  return response;
+};
+
+const validateEmail = function () {
+  const emailAddress = document.getElementById("email").value;
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(emailAddress);
+};
+
 const submitForm = function () {
   const form = document.getElementById("my-form");
   event.preventDefault(); // prevent the form from submitting normally
@@ -22,9 +92,9 @@ const submitForm = function () {
       let resp = JSON.parse(xhr.response);
       let notify = document.getElementById("notify");
       if (resp["error"] == null) {
-        notify.innerHTML = `<div class="alert alert-success alert-dismissible fade show" role="alert" style="width:30%;">User registered successfully!<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+        notify.innerHTML = `<div class="alert alert-success alert-dismissible fade show" role="alert" style="width:22%;z-index:2;">User registered successfully!<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
       } else
-        notify.innerHTML = `<div class="alert alert-danger alert-dismissible fade show" role="alert" style="width:30%;">Username already exist!<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+        notify.innerHTML = `<div class="alert alert-danger alert-dismissible fade show" role="alert" style="width:22%; z-index:2;">Username already exist!<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
 
       // do something with the response
     }
@@ -37,17 +107,8 @@ const submitForm = function () {
 const getActors = function () {
   var xhttp = new XMLHttpRequest();
 
-  let birthdate = document.getElementById("birthdate").value;
-  let errorMessage = document.getElementById("birthdate-error");
-
-  if (birthdate.trim() === "") {
-    errorMessage.style.color = "red";
-    errorMessage.style.font = "14px";
-    errorMessage.textContent = "Birthdate is required";
-    setTimeout(function () {
-      errorMessage.innerHTML = "";
-    }, 3000); // 5000 milliseconds = 5 seconds
-  } else {
+  if (birthValidation()) {
+    const birthdate = document.getElementById("birthdate").value;
     // Create a new Date object using the date string
     var date = new Date(birthdate);
 
@@ -88,30 +149,9 @@ const getActors = function () {
 
 // validating phone number
 
-const phoneNumber = document.getElementById("phone");
-
-const check_phoneNumber = function (phoneNumber) {
-  let response = 1;
-  if (phoneNumber.length < 11 || phoneNumber.length > 15) response = -1;
-
-  if ((phoneNumber[0] != "+" && phoneNumber[0] < "0") || phoneNumber[0] > "9") {
-    response = -2;
-  }
-
-  for (let i = 1; i < phoneNumber.length; i++) {
-    if (phoneNumber[i] < "0" || phoneNumber[i] > "9") {
-      response = -2;
-      break;
-    }
-  }
-
-  return response;
-};
-
 phoneNumber.addEventListener("blur", function () {
-  const userInput = phoneNumber.value;
-  // debugger;
-  let result = check_phoneNumber(userInput);
+  debugger;
+  let result = check_phoneNumber();
 
   const errorMessage = document.createElement("p");
 
@@ -129,31 +169,17 @@ phoneNumber.addEventListener("blur", function () {
   if (document.getElementById("phone_error")) {
     document.getElementById("phone_error").remove();
   }
+
   if (result != 1) {
+    switchButton(0);
     errorMessage.id = "phone_error";
     document
       .getElementById("phoneNumber")
       .insertBefore(errorMessage, phoneNumber.previousSibling);
-  }
+  } else switchButton(1);
 });
 
 // validating full name
-
-const fullName = document.getElementById("full_name");
-
-const check_fullName = function (fullName) {
-  for (let i = 0; i < fullName.length; i++) {
-    if (fullName[i] == " ") continue;
-    const charCode = fullName.charCodeAt(i);
-    if (
-      !(charCode > 64 && charCode < 91) &&
-      !(charCode > 96 && charCode < 123)
-    ) {
-      return false;
-    }
-  }
-  return true;
-};
 
 fullName.addEventListener("blur", function () {
   const userInput = fullName.value;
@@ -181,19 +207,10 @@ fullName.addEventListener("blur", function () {
   }
 });
 
-// validate email address
-
-function validateEmail(email) {
-  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return regex.test(email);
-}
-
-const emailAddress = document.getElementById("email");
-
 emailAddress.addEventListener("blur", function () {
-  const userInput = emailAddress.value;
-  //debugger;
-  if (!validateEmail(userInput)) {
+  debugger;
+  if (!validateEmail()) {
+    switchButton(0);
     const errorMessage = document.createElement("p");
     errorMessage.style.color = "red";
     errorMessage.style.font = "14px";
@@ -209,9 +226,38 @@ emailAddress.addEventListener("blur", function () {
       .getElementById("Email")
       .insertBefore(errorMessage, emailAddress.previousSibling);
   } else {
+    switchButton(1);
+
     // check if an error message already appeared
     if (document.getElementById("email_error")) {
       document.getElementById("email_error").remove();
+    }
+  }
+});
+
+birthdate.addEventListener("blur", function () {
+  debugger;
+  if (!birthValidation()) {
+    const errorMessage = document.createElement("p");
+    errorMessage.textContent = "BirthDate is required!";
+    errorMessage.style.color = "red";
+    errorMessage.style.font = "14px";
+    // check if an error message already appeared
+    if (document.getElementById("birthDate_error")) {
+      document.getElementById("birthDate_error").remove();
+    }
+
+    errorMessage.id = "birthDate_error";
+    document
+      .getElementById("birthDate")
+      .insertBefore(errorMessage, birthdate.previousSibling);
+
+    switchButton(0);
+  } else {
+    // birthdate is correct enable button and remove error
+    switchButton(1);
+    if (document.getElementById("birthDate_error")) {
+      document.getElementById("birthDate_error").remove();
     }
   }
 });

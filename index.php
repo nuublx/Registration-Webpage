@@ -2,13 +2,16 @@
 
 <head>
 	<title>Registration Form</title>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 	<script src="js/bootstrap.bundle.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="index.css">
 
 </head>
 
-<body>
+<body id ="container">
+	<?php include 'header.php'?>
 	<div id = "notify"></div>
 	</div>
 	<form id="my-form">
@@ -26,7 +29,6 @@
 		<div id="birthDate">
 
 			<label for="birthdate">Birthdate<span class="required">*</span></label>
-			<div id="birthdate-error"></div>
 
 			<input type="date" id="birthdate" name="birth_date" required>
 			<button onclick="getActors()">Actors Born</button>
@@ -57,10 +59,10 @@
 			<input type="email" id="email" name="email" required>
 		</div>
 		<div id='Submit'>
-			<input type="submit" value="Submit" onclick="submitForm()" form="myForm">
+			<input type="submit" id="submit" value="Submit" onclick="submitForm()" form="myForm">
 		</div>
 	</form>
-
+	<?php include 'footer.php'?>
 	<script src="index.js"></script>
 
 </body>
