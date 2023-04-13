@@ -14,19 +14,72 @@ const submitForm = function () {
   const xhr = new XMLHttpRequest();
   debugger;
   // configure the request
-  xhr.open("POST", "submit-form.php");
+  xhr.open("POST", "formController.php");
   // set the callback function to handle the response
   xhr.onload = function () {
     if (xhr.status === 200) {
       let resp = JSON.parse(xhr.response);
-      if (resp["error"] == null) console.log(resp["message"]);
-      else console.log(resp["error"]);
+      if (resp["error"] == null) {
+        console.log(resp["message"]);
+      } else console.log(resp["error"]);
       // do something with the response
     }
   };
 
   // send the request with the form data
   xhr.send(new FormData(form));
+};
+
+const getActors = function () {
+  var xhttp = new XMLHttpRequest();
+
+  let birthdate = document.getElementById("birthdate").value;
+  let errorMessage = document.getElementById("birthdate-error");
+
+  if (birthdate.trim() === "") {
+    errorMessage.style.color = "red";
+    errorMessage.style.font = "14px";
+    errorMessage.textContent = "Birthdate is required";
+    setTimeout(function () {
+      errorMessage.innerHTML = "";
+    }, 3000); // 5000 milliseconds = 5 seconds
+  } else {
+    // Create a new Date object using the date string
+    var date = new Date(birthdate);
+
+    // Extract the month, and day values from the Date object
+    var month = date.getMonth() + 1; // Add 1 because getMonth() returns values from 0 to 11
+    var day = date.getDate();
+    console.log(month);
+
+    var url = "API_Ops.php?month=" + month + "&day=" + day;
+
+    let path = "popup.html";
+    let HTMLurl = window.location.href + path;
+    let popup = window.open(
+      HTMLurl,
+      "Actors Born on that day",
+      "width=400,height=600"
+    );
+
+    debugger;
+    xhttp.open("GET", url, true);
+    xhttp.send();
+
+    xhttp.onload = function () {
+      if (xhttp.status === 200) {
+        let resp = JSON.parse(xhttp.response);
+
+        let myList = popup.document.getElementById("myList");
+        let array = resp["Actors' names"];
+        for (let i = 0; i < array.length; i++) {
+          let listItem = document.createElement("li");
+          listItem.textContent = array[i];
+          myList.appendChild(listItem);
+        }
+      }
+    };
+  }
 };
 
 // validating phone number
@@ -49,18 +102,18 @@ const check_phoneNumber = function (phoneNumber) {
 
 phoneNumber.addEventListener("blur", function () {
   const userInput = phoneNumber.value;
-  debugger;
+  // debugger;
   let result = check_phoneNumber(userInput);
 
   const errorMessage = document.createElement("p");
 
   if (result == -1) {
     errorMessage.textContent =
-      "Input must be at least 11 characters long and at most 15 characters long!!";
+      "Input must be at least 11 characters long and at most 15 characters long";
     errorMessage.style.color = "red";
     errorMessage.style.font = "14px";
   } else if (result == -2) {
-    errorMessage.textContent = "Input must be digits only!!";
+    errorMessage.textContent = "Input must be digits only";
     errorMessage.style.color = "red";
     errorMessage.style.font = "14px";
   }
@@ -96,12 +149,12 @@ const check_fullName = function (fullName) {
 
 fullName.addEventListener("blur", function () {
   const userInput = fullName.value;
-  debugger;
+  //debugger;
   if (!check_fullName(userInput)) {
     const errorMessage = document.createElement("p");
     errorMessage.style.color = "red";
     errorMessage.style.font = "14px";
-    errorMessage.textContent = "Input must be all alphabet letters !!";
+    errorMessage.textContent = "Input must be all alphabet letters";
 
     // check if an error message already appeared
     if (document.getElementById("full_name_error")) {
@@ -131,12 +184,12 @@ const emailAddress = document.getElementById("email");
 
 emailAddress.addEventListener("blur", function () {
   const userInput = emailAddress.value;
-  debugger;
+  //debugger;
   if (!validateEmail(userInput)) {
     const errorMessage = document.createElement("p");
     errorMessage.style.color = "red";
     errorMessage.style.font = "14px";
-    errorMessage.textContent = "Email is invalid!!";
+    errorMessage.textContent = "Email is invalid";
 
     // check if an error message already appeared
     if (document.getElementById("email_error")) {
