@@ -3,15 +3,17 @@
 //TODO
 /*
 1)
-make phone input take + in the first character
-and allow spaces between numbers maximum one space between two digits
-2) show a notification if the user already exist
-or the user has registered successfully.
+username validation not empty
+2)
+birthdate validation not empty
+3)
+
 */
 const fullName = document.getElementById("full_name");
 const phoneNumber = document.getElementById("phone");
 const emailAddress = document.getElementById("email");
 const birthdate = document.getElementById("birthdate");
+const address = document.getElementById("address");
 
 const switchButton = function (choice) {
   const myButton = document.getElementById("submit");
@@ -76,6 +78,13 @@ const validateEmail = function () {
   const emailAddress = document.getElementById("email").value;
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return regex.test(emailAddress);
+};
+
+const validateAddress = function () {
+  const address = document.getElementById("address").value;
+
+  if (address.trim() == "") return false;
+  return true;
 };
 
 const submitForm = function () {
@@ -187,6 +196,7 @@ fullName.addEventListener("blur", function () {
   const userInput = fullName.value;
   //debugger;
   if (!check_fullName(userInput)) {
+    switchButton(0);
     const errorMessage = document.createElement("p");
     errorMessage.style.color = "red";
     errorMessage.style.font = "14px";
@@ -202,6 +212,7 @@ fullName.addEventListener("blur", function () {
       .getElementById("fullName")
       .insertBefore(errorMessage, fullName.previousSibling);
   } else {
+    switchButton(1);
     // check if an error message already appeared
     if (document.getElementById("full_name_error")) {
       document.getElementById("full_name_error").remove();
@@ -260,6 +271,30 @@ birthdate.addEventListener("blur", function () {
     switchButton(1);
     if (document.getElementById("birthDate_error")) {
       document.getElementById("birthDate_error").remove();
+    }
+  }
+});
+
+address.addEventListener("blur", () => {
+  debugger;
+  if (!validateAddress()) {
+    switchButton(0);
+    const errorMessage = document.createElement("p");
+    errorMessage.textContent = "Address is required!";
+    errorMessage.style.color = "red";
+    errorMessage.style.font = "14px";
+
+    if (document.getElementById("address_error")) {
+      document.getElementById("address_error").remove();
+    }
+    errorMessage.id = "address_error";
+    document
+      .getElementById("Address")
+      .insertBefore(errorMessage, address.previousSibling);
+  } else {
+    switchButton(1);
+    if (document.getElementById("address_error")) {
+      document.getElementById("address_error").remove();
     }
   }
 });

@@ -15,7 +15,7 @@ function process_registration_form()
     $address = $_POST['address'];
     $password = $_POST['password'];
     $email = $_POST['email'];
-
+    //process_image exists in upload.php
     $user_image = process_image($user_id, $createdAt);
     $result = $db->create($user_id, $user_name, $full_name, $birth_date, $phone, $address, $user_image, $email, $password);
 

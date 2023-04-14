@@ -14,7 +14,7 @@
 	<?php include 'header.php'?>
 	<div id = "notify"></div>
 	</div>
-	<form id="my-form">
+	<form id="my-form" >
 		<div id="fullName">
 			<label for="full_name">Full Name<span class="required">*</span></label>
 			<input type="text" id="full_name" name="full_name" required>
