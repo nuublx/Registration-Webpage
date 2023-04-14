@@ -12,11 +12,21 @@ const fullName = document.getElementById("full_name");
 const phoneNumber = document.getElementById("phone");
 const emailAddress = document.getElementById("email");
 const birthdate = document.getElementById("birthdate");
+const password = document.getElementById("password");
+const confirm_password = document.getElementById("confirm_password");
 
 const switchButton = function (choice) {
   const myButton = document.getElementById("submit");
-  if (choice == 1) myButton.disabled = false;
-  if (choice == 0) myButton.disabled = true;
+  if (choice == 1) {
+    myButton.disabled = false;
+    myButton.style.backgroundColor = '#4caf50';
+  }
+
+  if (choice == 0) {
+    myButton.disabled = true;
+    myButton.style.backgroundColor = 'grey';
+
+  };
 };
 
 const check_fullName = function () {
@@ -191,6 +201,7 @@ fullName.addEventListener("blur", function () {
     errorMessage.style.color = "red";
     errorMessage.style.font = "14px";
     errorMessage.textContent = "Input must be all alphabet letters";
+    switchButton(0);
 
     // check if an error message already appeared
     if (document.getElementById("full_name_error")) {
@@ -202,6 +213,7 @@ fullName.addEventListener("blur", function () {
       .getElementById("fullName")
       .insertBefore(errorMessage, fullName.previousSibling);
   } else {
+    switchButton(1);
     // check if an error message already appeared
     if (document.getElementById("full_name_error")) {
       document.getElementById("full_name_error").remove();
@@ -261,5 +273,80 @@ birthdate.addEventListener("blur", function () {
     if (document.getElementById("birthDate_error")) {
       document.getElementById("birthDate_error").remove();
     }
+  }
+});
+
+
+
+// validate password 
+function validatePassword() {
+
+  var flag = true;
+
+  const passwordLengthCheck = document.getElementById("password_length_check");
+  const passwordNumberCheck = document.getElementById("password_number_check");
+  const passwordSpecialCheck = document.getElementById("password_special_check");
+  const passwordMatchCheck = document.getElementById("password_match_check");
+
+  // Password is at least 8 characters long
+  if (password.value.length < 8) {
+    passwordLengthCheck.innerHTML = '&#x2718;';
+    passwordLengthCheck.style.color = "red";
+    flag = false;
+  } else {
+    passwordLengthCheck.innerHTML = '&#x2714;';
+    passwordLengthCheck.style.color = "green";
+  }
+
+
+  // Password includes at least one digit
+  var digitRegex = /(?=.*\d)/;
+  if (!digitRegex.test(password.value)) {
+    passwordNumberCheck.innerHTML = '&#x2718;';
+    passwordNumberCheck.style.color = "red";
+    flag = false;
+  } else {
+    passwordNumberCheck.innerHTML = '&#x2714;';
+    passwordNumberCheck.style.color = "green";
+  }
+
+  // Password includes at least one special character
+  var sRegex = /(?=.*[!@#$%^&*_/])/;
+  if (!sRegex.test(password.value)) {
+    passwordSpecialCheck.innerHTML = '&#x2718;';
+    passwordSpecialCheck.style.color = "red";
+    flag = false;
+  } else {
+    passwordSpecialCheck.innerHTML = '&#x2714;';
+    passwordSpecialCheck.style.color = "green";
+  }
+
+
+  if ((password.value !== confirm_password.value) || password.value.length == 0) {
+    passwordMatchCheck.innerHTML = '&#x2718;';
+    passwordMatchCheck.style.color = "red";
+    flag = false;
+  } else {
+    passwordMatchCheck.innerHTML = '&#x2714;';
+    passwordMatchCheck.style.color = "green";
+  }
+
+  // Password is valid
+  return flag;
+}
+
+password.addEventListener("blur", function () {
+  if (validatePassword()) {
+    switchButton(1);
+  } else {
+    switchButton(0);
+  }
+});
+
+confirm_password.addEventListener("blur", function () {
+  if (validatePassword()) {
+    switchButton(1);
+  } else {
+    switchButton(0);
   }
 });
