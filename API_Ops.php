@@ -1,4 +1,3 @@
-
 <?php
 
 function getActorsIDs($month, $day)
@@ -16,7 +15,7 @@ function getActorsIDs($month, $day)
         CURLOPT_CUSTOMREQUEST => "GET",
         CURLOPT_HTTPHEADER => [
             "X-RapidAPI-Host: online-movie-database.p.rapidapi.com",
-            "X-RapidAPI-Key: 62d0df0dadmsh6f9c3805c3ef8e4p1c93e4jsn67530d087a3e"
+            'X-RapidAPI-Key: 47c3e17948msh0cec7a2604f6080p1396a7jsn13c3b413e8d2',
         ],
     ]);
 
@@ -59,7 +58,7 @@ function getActorsData($month, $day)
             CURLOPT_CUSTOMREQUEST => "GET",
             CURLOPT_HTTPHEADER => [
                 "X-RapidAPI-Host: online-movie-database.p.rapidapi.com",
-                "X-RapidAPI-Key: 62d0df0dadmsh6f9c3805c3ef8e4p1c93e4jsn67530d087a3e"
+                'X-RapidAPI-Key: 47c3e17948msh0cec7a2604f6080p1396a7jsn13c3b413e8d2',
             ],
         ]);
 
