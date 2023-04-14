@@ -12,7 +12,7 @@ class UserRepository
     }
   }
 
-  private function exist($user_name)
+  public function exist($user_name)
   {
     $stmt = $this->mysqli->prepare("SELECT * FROM users WHERE user_name = ?");
     $stmt->bind_param('s', $user_name);
@@ -25,9 +25,6 @@ class UserRepository
   }
   public function create($user_id, $user_name, $full_name, $birth_date, $phone, $address, $user_image, $email, $password)
   {
-    if ($this->exist($user_name))
-      return false;
-
     $stmt = $this->mysqli->prepare("INSERT INTO users (user_id, user_name, full_name, birthdate, phone, address, user_image, email, password, date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
     $stmt->bind_param('sssssssss', $user_id, $user_name, $full_name, $birth_date, $phone, $address, $user_image, $email, $password);
     $stmt->execute();

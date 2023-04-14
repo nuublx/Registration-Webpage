@@ -143,11 +143,13 @@ const submitForm = function () {
       if (xhr.status === 200) {
         let resp = JSON.parse(xhr.response);
         let notify = document.getElementById("notify");
-        if (resp["response"] == "Form submitted successfully!") {
+        if (resp["response"] == 1) {
           notify.innerHTML = `<div class="alert alert-success alert-dismissible fade show" role="alert" style="width:22%;z-index:2;">User registered successfully!<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
-        } else
-          notify.innerHTML = `<div class="alert alert-danger alert-dismissible fade show" role="alert" style="width:22%; z-index:2;">Username already exist!<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
-        // do something with the response
+        } else if (resp["response"] == -1)
+          notify.innerHTML = `<div class="alert alert-danger alert-dismissible fade show" role="alert" style="width:22%; z-index:2;">Error in registration try again!<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+        else if (resp["response"] == -2) {
+          notify.innerHTML = `<div class="alert alert-danger alert-dismissible fade show" role="alert" style="width:22%; z-index:2;">Username already exists!<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+        }
       }
     };
 

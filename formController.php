@@ -8,6 +8,7 @@ class formController{
 
         $db = new UserRepository();
         $upload_image = new upload();
+        
         $user_id = uniqid("USR");
         $createdAt = time();
 
@@ -18,17 +19,22 @@ class formController{
         $address = $_POST['address'];
         $password = $_POST['password'];
         $email = $_POST['email'];
-        //process_image exists in upload.php
-        $user_image = $upload_image->process_image($user_id, $createdAt);
-        $result = $db->create($user_id, $user_name, $full_name, $birth_date, $phone, $address, $user_image, $email, $password);
-
-        if ($result) {
-            echo json_encode(array("response" => "User added successfully"));
-
-        } else {
-            echo json_encode(array('response' => "User already exist"));
+        // if this username doesn't exist
+        if (!$db->exist($user_name)) {
+            $user_image = $upload_image->process_image($user_id, $createdAt);
+            
+            $result = $db->create($user_id, $user_name, $full_name, $birth_date, $phone, $address, $user_image, $email, $password) ? true: false; 
+            
+            if ($result)
+                //user registered successfully
+                echo json_encode(array("response" => 1));
+            else 
+                //error adding user
+                echo json_encode(array("response" => -1));
+        }else {
+            //username already exist
+            echo json_encode(array('response' => -2));
         }
-        ob_get_clean();
     }
 }
 ?>
