@@ -1,18 +1,31 @@
 <?php
-function process_image($user_id, $createdAt)
-{
-    $fileName = $_FILES['user_image']['name'];
-    $fileTemp = $_FILES['user_image']['tmp_name'];
+class upload {
 
-    $exp = explode(".", $fileName);
-    $extension = end($exp);
+    private $fileName;
+    private $fileTemp;
+    private $extension;
+    private $target;
+    function __construct() {
+        $this->fileName="";
+        $this->fileTemp="";
+        $this->extension="";
+        $this->target="";
+    }
+    function process_image($user_id, $createdAt)
+    {
+        $this -> fileName = $_FILES['user_image']['name'];
+        $this->fileTemp = $_FILES['user_image']['tmp_name'];
 
-    $newFileName = $user_id . $createdAt . "." . $extension;
+        $exp = explode(".", $this->fileName);
+        $this->extension = end($exp);
 
-    $target = __DIR__ . "//uploads//" . "/" . $newFileName;
+        $newFileName = $user_id . $createdAt . "." . $this->extension;
 
-    if (move_uploaded_file($fileTemp, $target))
-        return $newFileName;
+        $this->target = __DIR__ . "//uploads//" . "/" . $newFileName;
+
+        if (move_uploaded_file($this->fileTemp, $this->target))
+            return $newFileName;
+        return null;
+    }
 }
-
 ?>

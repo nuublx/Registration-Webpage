@@ -121,7 +121,6 @@ const userImageValidation = function () {
   }
 };
 const submitForm = function () {
-  debugger;
   if (
     fullNameValidation() &&
     userNameValidation() &&
@@ -129,7 +128,7 @@ const submitForm = function () {
     phoneNumberValidation() == 1 &&
     EmailValidation() &&
     addressValidation() &&
-    userImageValidation == 1
+    userImageValidation() == 1
   ) {
     const form = document.getElementById("my-form");
     event.preventDefault(); // prevent the form from submitting normally
@@ -137,17 +136,17 @@ const submitForm = function () {
     const xhr = new XMLHttpRequest();
 
     // configure the request
-    xhr.open("POST", "formController.php");
+    xhr.open("POST", "index.php");
     // set the callback function to handle the response
     xhr.onload = function () {
+      debugger;
       if (xhr.status === 200) {
         let resp = JSON.parse(xhr.response);
         let notify = document.getElementById("notify");
-        if (resp["error"] == null) {
+        if (resp["response"] == "Form submitted successfully!") {
           notify.innerHTML = `<div class="alert alert-success alert-dismissible fade show" role="alert" style="width:22%;z-index:2;">User registered successfully!<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
         } else
           notify.innerHTML = `<div class="alert alert-danger alert-dismissible fade show" role="alert" style="width:22%; z-index:2;">Username already exist!<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
-
         // do something with the response
       }
     };
@@ -488,7 +487,7 @@ userImage.addEventListener("blur", () => {
 });
 
 username.addEventListener("blur", () => {
-  if (userNameValidation()) {
+  if (!userNameValidation()) {
     const errorMessage = document.createElement("p");
     errorMessage.textContent = "Username cannot be empty!";
     errorMessage.style.color = "red";
