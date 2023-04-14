@@ -42,7 +42,7 @@ input[type="date"]::-webkit-inner-spin-button {
   display: none;
 }
 input[type="submit"] {
-  background-color: #4caf50;
+  background-color: grey;
   color: white;
   padding: 10px 20px;
   border: none;
@@ -51,9 +51,9 @@ input[type="submit"] {
   font-size: 16px;
   font-weight: bold;
 }
-input[type="submit"]:hover {
+/* input[type="submit"]:hover {
   background-color: #3e8e41;
-}
+} */
 #birthdate {
   margin-bottom: 10px;
 }

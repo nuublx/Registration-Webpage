@@ -7,18 +7,27 @@ username validation not empty
 2)
 birthdate validation not empty
 3)
-
+change api key
 */
 const fullName = document.getElementById("full_name");
 const phoneNumber = document.getElementById("phone");
 const emailAddress = document.getElementById("email");
 const birthdate = document.getElementById("birthdate");
 const address = document.getElementById("address");
+const password = document.getElementById("password");
+const confirm_password = document.getElementById("confirm_password");
 
 const switchButton = function (choice) {
   const myButton = document.getElementById("submit");
-  if (choice == 1) myButton.disabled = false;
-  if (choice == 0) myButton.disabled = true;
+  if (choice == 1) {
+    myButton.disabled = false;
+    myButton.style.backgroundColor = "#4caf50";
+  }
+
+  if (choice == 0) {
+    myButton.disabled = true;
+    myButton.style.backgroundColor = "grey";
+  }
 };
 
 const check_fullName = function () {
@@ -107,6 +116,7 @@ const submitForm = function () {
 
       // do something with the response
     }
+    window.scrollTo(0, 0);
   };
 
   // send the request with the form data
@@ -114,11 +124,16 @@ const submitForm = function () {
 };
 
 const getActors = function () {
+  //debugger
   event.preventDefault(); // prevent the form from submitting normally
 
   var xhttp = new XMLHttpRequest();
 
   if (birthValidation()) {
+    if (document.getElementById("birthDate_error")) {
+      document.getElementById("birthDate_error").remove();
+    }
+
     const birthdate = document.getElementById("birthdate").value;
     // Create a new Date object using the date string
     var date = new Date(birthdate);
@@ -138,7 +153,7 @@ const getActors = function () {
       "width=400,height=600"
     );
 
-    debugger;
+    // debugger;
     xhttp.open("GET", url, true);
     xhttp.send();
 
@@ -155,6 +170,20 @@ const getActors = function () {
         }
       }
     };
+  } else {
+    const errorMessage = document.createElement("p");
+    errorMessage.textContent = "BirthDate is required!";
+    errorMessage.style.color = "red";
+    errorMessage.style.font = "14px";
+    // check if an error message already appeared
+    if (document.getElementById("birthDate_error")) {
+      document.getElementById("birthDate_error").remove();
+    }
+
+    errorMessage.id = "birthDate_error";
+    document
+      .getElementById("birthDate")
+      .insertBefore(errorMessage, birthdate.previousSibling);
   }
 };
 
@@ -201,6 +230,7 @@ fullName.addEventListener("blur", function () {
     errorMessage.style.color = "red";
     errorMessage.style.font = "14px";
     errorMessage.textContent = "Input must be all alphabet letters";
+    switchButton(0);
 
     // check if an error message already appeared
     if (document.getElementById("full_name_error")) {
@@ -296,5 +326,77 @@ address.addEventListener("blur", () => {
     if (document.getElementById("address_error")) {
       document.getElementById("address_error").remove();
     }
+  }
+});
+
+// validate password
+function validatePassword() {
+  var flag = true;
+
+  const passwordLengthCheck = document.getElementById("password_length_check");
+  const passwordNumberCheck = document.getElementById("password_number_check");
+  const passwordSpecialCheck = document.getElementById(
+    "password_special_check"
+  );
+  const passwordMatchCheck = document.getElementById("password_match_check");
+
+  // Password is at least 8 characters long
+  if (password.value.length < 8) {
+    passwordLengthCheck.innerHTML = "&#x2718;";
+    passwordLengthCheck.style.color = "red";
+    flag = false;
+  } else {
+    passwordLengthCheck.innerHTML = "&#x2714;";
+    passwordLengthCheck.style.color = "green";
+  }
+
+  // Password includes at least one digit
+  var digitRegex = /(?=.*\d)/;
+  if (!digitRegex.test(password.value)) {
+    passwordNumberCheck.innerHTML = "&#x2718;";
+    passwordNumberCheck.style.color = "red";
+    flag = false;
+  } else {
+    passwordNumberCheck.innerHTML = "&#x2714;";
+    passwordNumberCheck.style.color = "green";
+  }
+
+  // Password includes at least one special character
+  var sRegex = /(?=.*[!@#$%^&*_/])/;
+  if (!sRegex.test(password.value)) {
+    passwordSpecialCheck.innerHTML = "&#x2718;";
+    passwordSpecialCheck.style.color = "red";
+    flag = false;
+  } else {
+    passwordSpecialCheck.innerHTML = "&#x2714;";
+    passwordSpecialCheck.style.color = "green";
+  }
+
+  if (password.value !== confirm_password.value || password.value.length == 0) {
+    passwordMatchCheck.innerHTML = "&#x2718;";
+    passwordMatchCheck.style.color = "red";
+    flag = false;
+  } else {
+    passwordMatchCheck.innerHTML = "&#x2714;";
+    passwordMatchCheck.style.color = "green";
+  }
+
+  // Password is valid
+  return flag;
+}
+
+password.addEventListener("blur", function () {
+  if (validatePassword()) {
+    switchButton(1);
+  } else {
+    switchButton(0);
+  }
+});
+
+confirm_password.addEventListener("blur", function () {
+  if (validatePassword()) {
+    switchButton(1);
+  } else {
+    switchButton(0);
   }
 });

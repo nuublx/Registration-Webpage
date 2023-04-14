@@ -1,4 +1,3 @@
-
 <?php
 class UserRepository
 {
@@ -12,6 +11,7 @@ class UserRepository
       die('Connect Error: ' . $this->mysqli->connect_errno);
     }
   }
+
   private function exist($user_name)
   {
     $stmt = $this->mysqli->prepare("SELECT * FROM users WHERE user_name = ?");
