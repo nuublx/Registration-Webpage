@@ -108,6 +108,8 @@ const submitForm = function () {
 
       // do something with the response
     }
+    window.scrollTo(0, 0);
+
   };
 
   // send the request with the form data
@@ -115,11 +117,16 @@ const submitForm = function () {
 };
 
 const getActors = function () {
+  //debugger
   event.preventDefault(); // prevent the form from submitting normally
 
   var xhttp = new XMLHttpRequest();
 
   if (birthValidation()) {
+    if (document.getElementById("birthDate_error")) {
+      document.getElementById("birthDate_error").remove();
+    }
+
     const birthdate = document.getElementById("birthdate").value;
     // Create a new Date object using the date string
     var date = new Date(birthdate);
@@ -139,7 +146,7 @@ const getActors = function () {
       "width=400,height=600"
     );
 
-    debugger;
+    // debugger;
     xhttp.open("GET", url, true);
     xhttp.send();
 
@@ -156,6 +163,20 @@ const getActors = function () {
         }
       }
     };
+  } else {
+    const errorMessage = document.createElement("p");
+    errorMessage.textContent = "BirthDate is required!";
+    errorMessage.style.color = "red";
+    errorMessage.style.font = "14px";
+    // check if an error message already appeared
+    if (document.getElementById("birthDate_error")) {
+      document.getElementById("birthDate_error").remove();
+    }
+
+    errorMessage.id = "birthDate_error";
+    document
+      .getElementById("birthDate")
+      .insertBefore(errorMessage, birthdate.previousSibling);
   }
 };
 
