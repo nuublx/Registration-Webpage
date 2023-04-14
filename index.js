@@ -10,12 +10,14 @@ birthdate validation not empty
 change api key
 */
 const fullName = document.getElementById("full_name");
+const username = document.getElementById("user_name");
 const phoneNumber = document.getElementById("phone");
-const emailAddress = document.getElementById("email");
 const birthdate = document.getElementById("birthdate");
 const address = document.getElementById("address");
 const password = document.getElementById("password");
 const confirm_password = document.getElementById("confirm_password");
+const userImage = document.getElementById("user_image");
+const emailAddress = document.getElementById("email");
 
 const switchButton = function (choice) {
   const myButton = document.getElementById("submit");
@@ -30,13 +32,13 @@ const switchButton = function (choice) {
   }
 };
 
-const check_fullName = function () {
-  const fullName = document.getElementById("full_name").value;
-  let name_is_spaces = true;
-  for (let i = 0; i < fullName.length; i++) {
-    if (fullName[i] == " ") continue;
+const fullNameValidation = function () {
+  const full_name = fullName.value.trim();
+  if (full_name.length == 0) return false;
+  for (let i = 0; i < full_name.length; i++) {
+    if (full_name[i] == " ") continue;
 
-    const charCode = fullName.charCodeAt(i);
+    const charCode = full_name.charCodeAt(i);
 
     if (
       !(charCode > 64 && charCode < 91) &&
@@ -44,37 +46,39 @@ const check_fullName = function () {
     ) {
       return false;
     }
-
-    // if the fullname was all spaces execution won't reach here
-    name_is_spaces = false;
-  }
-
-  if (name_is_spaces) {
-    return false;
   }
 
   return true;
 };
 
+const userNameValidation = function () {
+  if (username.value.length == 0) return false;
+  for (let i = 0; i < username.value.length; i++) {
+    if (username.value[i] == " ") return false;
+  }
+  return true;
+};
 const birthValidation = function () {
-  const birthdate = document.getElementById("birthdate").value;
-  if (birthdate.trim() === "") {
+  if (birthdate.value.trim() === "") {
     return false;
   }
   return true;
 };
 
-const check_phoneNumber = function () {
-  const phoneNumber = document.getElementById("phone").value;
+const phoneNumberValidation = function () {
   let response = 1;
-  if (phoneNumber.length < 11 || phoneNumber.length > 15) response = -1;
+  if (phoneNumber.value.length < 11 || phoneNumber.value.length > 15)
+    response = -1;
 
-  if ((phoneNumber[0] != "+" && phoneNumber[0] < "0") || phoneNumber[0] > "9") {
+  if (
+    (phoneNumber.value[0] != "+" && phoneNumber.value[0] < "0") ||
+    phoneNumber.value[0] > "9"
+  ) {
     response = -2;
   }
 
-  for (let i = 1; i < phoneNumber.length; i++) {
-    if (phoneNumber[i] < "0" || phoneNumber[i] > "9") {
+  for (let i = 1; i < phoneNumber.value.length; i++) {
+    if (phoneNumber.value[i] < "0" || phoneNumber.value[i] > "9") {
       response = -2;
       break;
     }
@@ -83,44 +87,77 @@ const check_phoneNumber = function () {
   return response;
 };
 
-const validateEmail = function () {
-  const emailAddress = document.getElementById("email").value;
+const EmailValidation = function () {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return regex.test(emailAddress);
+  return regex.test(emailAddress.value) && emailAddress.value.trim() != "";
 };
 
-const validateAddress = function () {
-  const address = document.getElementById("address").value;
-
-  if (address.trim() == "") return false;
+const addressValidation = function () {
+  if (address.value.trim() == "") return false;
   return true;
 };
 
-const submitForm = function () {
-  const form = document.getElementById("my-form");
-  event.preventDefault(); // prevent the form from submitting normally
-  // create a new XMLHttpRequest object
-  const xhr = new XMLHttpRequest();
-  debugger;
-  // configure the request
-  xhr.open("POST", "formController.php");
-  // set the callback function to handle the response
-  xhr.onload = function () {
-    if (xhr.status === 200) {
-      let resp = JSON.parse(xhr.response);
-      let notify = document.getElementById("notify");
-      if (resp["error"] == null) {
-        notify.innerHTML = `<div class="alert alert-success alert-dismissible fade show" role="alert" style="width:22%;z-index:2;">User registered successfully!<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
-      } else
-        notify.innerHTML = `<div class="alert alert-danger alert-dismissible fade show" role="alert" style="width:22%; z-index:2;">Username already exist!<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
-
-      // do something with the response
+const userImageValidation = function () {
+  if (userImage.files.length == 0) return -1;
+  else {
+    const imageName = userImage.files[0].name;
+    let userImageExtension = imageName.split(".").pop();
+    const imageExtensions = [
+      "jpg",
+      "jpeg",
+      "png",
+      "gif",
+      "bmp",
+      "tif",
+      "tiff",
+      "svg",
+      "webp",
+      "ico",
+    ];
+    if (imageExtensions.includes(userImageExtension)) return 1;
+    else {
+      return -2;
     }
-    window.scrollTo(0, 0);
-  };
+  }
+};
+const submitForm = function () {
+  debugger;
+  if (
+    fullNameValidation() &&
+    userNameValidation() &&
+    birthValidation() &&
+    phoneNumberValidation() == 1 &&
+    EmailValidation() &&
+    addressValidation() &&
+    userImageValidation == 1
+  ) {
+    const form = document.getElementById("my-form");
+    event.preventDefault(); // prevent the form from submitting normally
+    // create a new XMLHttpRequest object
+    const xhr = new XMLHttpRequest();
 
-  // send the request with the form data
-  xhr.send(new FormData(form));
+    // configure the request
+    xhr.open("POST", "formController.php");
+    // set the callback function to handle the response
+    xhr.onload = function () {
+      if (xhr.status === 200) {
+        let resp = JSON.parse(xhr.response);
+        let notify = document.getElementById("notify");
+        if (resp["error"] == null) {
+          notify.innerHTML = `<div class="alert alert-success alert-dismissible fade show" role="alert" style="width:22%;z-index:2;">User registered successfully!<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+        } else
+          notify.innerHTML = `<div class="alert alert-danger alert-dismissible fade show" role="alert" style="width:22%; z-index:2;">Username already exist!<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+
+        // do something with the response
+      }
+    };
+
+    // send the request with the form data
+    xhr.send(new FormData(form));
+  } else {
+    notify.innerHTML = `<div class="alert alert-danger alert-dismissible fade show" role="alert" style="width:22%; z-index:2;">Fill all required fields!<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+  }
+  window.scrollTo(0, 0);
 };
 
 const getActors = function () {
@@ -191,7 +228,7 @@ const getActors = function () {
 
 phoneNumber.addEventListener("blur", function () {
   debugger;
-  let result = check_phoneNumber();
+  let result = phoneNumberValidation();
 
   const errorMessage = document.createElement("p");
 
@@ -209,14 +246,18 @@ phoneNumber.addEventListener("blur", function () {
   if (document.getElementById("phone_error")) {
     document.getElementById("phone_error").remove();
   }
-
   if (result != 1) {
     switchButton(0);
     errorMessage.id = "phone_error";
     document
       .getElementById("phoneNumber")
       .insertBefore(errorMessage, phoneNumber.previousSibling);
-  } else switchButton(1);
+  } else {
+    if (document.getElementById("phone_error")) {
+      switchButton(1);
+      document.getElementById("phone_error").remove();
+    }
+  }
 });
 
 // validating full name
@@ -224,7 +265,7 @@ phoneNumber.addEventListener("blur", function () {
 fullName.addEventListener("blur", function () {
   const userInput = fullName.value;
   //debugger;
-  if (!check_fullName(userInput)) {
+  if (!fullNameValidation(userInput)) {
     switchButton(0);
     const errorMessage = document.createElement("p");
     errorMessage.style.color = "red";
@@ -252,7 +293,7 @@ fullName.addEventListener("blur", function () {
 
 emailAddress.addEventListener("blur", function () {
   debugger;
-  if (!validateEmail()) {
+  if (!EmailValidation()) {
     switchButton(0);
     const errorMessage = document.createElement("p");
     errorMessage.style.color = "red";
@@ -298,8 +339,9 @@ birthdate.addEventListener("blur", function () {
     switchButton(0);
   } else {
     // birthdate is correct enable button and remove error
-    switchButton(1);
+
     if (document.getElementById("birthDate_error")) {
+      switchButton(1);
       document.getElementById("birthDate_error").remove();
     }
   }
@@ -307,7 +349,7 @@ birthdate.addEventListener("blur", function () {
 
 address.addEventListener("blur", () => {
   debugger;
-  if (!validateAddress()) {
+  if (!addressValidation()) {
     switchButton(0);
     const errorMessage = document.createElement("p");
     errorMessage.textContent = "Address is required!";
@@ -322,8 +364,8 @@ address.addEventListener("blur", () => {
       .getElementById("Address")
       .insertBefore(errorMessage, address.previousSibling);
   } else {
-    switchButton(1);
     if (document.getElementById("address_error")) {
+      switchButton(1);
       document.getElementById("address_error").remove();
     }
   }
@@ -398,5 +440,76 @@ confirm_password.addEventListener("blur", function () {
     switchButton(1);
   } else {
     switchButton(0);
+  }
+});
+
+userImage.addEventListener("blur", () => {
+  const result = userImageValidation();
+  if (result == -1) {
+    const errorMessage = document.createElement("p");
+    errorMessage.textContent = "User Image is required!";
+    errorMessage.style.color = "red";
+    errorMessage.style.font = "14px";
+
+    // check if an error message already appeared
+    if (document.getElementById("userImage_error")) {
+      document.getElementById("userImage_error").remove();
+    }
+
+    errorMessage.id = "userImage_error";
+    document
+      .getElementById("userImage")
+      .insertBefore(errorMessage, userImage.previousSibling);
+
+    switchButton(0);
+  } else if (result == -2) {
+    const errorMessage = document.createElement("p");
+    errorMessage.textContent = "Image format is invalid!";
+    errorMessage.style.color = "red";
+    errorMessage.style.font = "14px";
+
+    // check if an error message already appeared
+    if (document.getElementById("userImage_error")) {
+      document.getElementById("userImage_error").remove();
+    }
+
+    errorMessage.id = "userImage_error";
+    document
+      .getElementById("userImage")
+      .insertBefore(errorMessage, userImage.previousSibling);
+
+    switchButton(0);
+  } else {
+    if (document.getElementById("userImage_error")) {
+      switchButton(1);
+      document.getElementById("userImage_error").remove();
+    }
+  }
+});
+
+username.addEventListener("blur", () => {
+  if (userNameValidation()) {
+    const errorMessage = document.createElement("p");
+    errorMessage.textContent = "Username cannot be empty!";
+    errorMessage.style.color = "red";
+    errorMessage.style.font = "14px";
+
+    // check if an error message already appeared
+    if (document.getElementById("username_error")) {
+      document.getElementById("username_error").remove();
+    }
+
+    errorMessage.id = "username_error";
+    document
+      .getElementById("userName")
+      .insertBefore(errorMessage, username.previousSibling);
+
+    switchButton(0);
+  } else {
+    // check if an error message already appeared
+    if (document.getElementById("username_error")) {
+      switchButton(1);
+      document.getElementById("username_error").remove();
+    }
   }
 });

@@ -85,7 +85,7 @@
 			<input type="email" id="email" name="email" required>
 		</div>
 		<div id='Submit'>
-			<input type="submit" id="submit" value="Submit" onclick="submitForm()" form="myForm">
+			<input type="submit" id="submit" value="Submit" onclick="submitForm()" form="myForm" disabled>
 		</div>
 	</form>
 	<?php include 'footer.php' ?>
