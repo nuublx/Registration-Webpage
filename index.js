@@ -120,16 +120,20 @@ const userImageValidation = function () {
     }
   }
 };
-const submitForm = function () {
-  if (
+const validateAllFields = function () {
+  return (
     fullNameValidation() &&
     userNameValidation() &&
     birthValidation() &&
+    validatePassword() &&
     phoneNumberValidation() == 1 &&
     EmailValidation() &&
     addressValidation() &&
     userImageValidation() == 1
-  ) {
+  )
+};
+const submitForm = function () {
+  if (validateAllFields()) {
     const form = document.getElementById("my-form");
     event.preventDefault(); // prevent the form from submitting normally
     // create a new XMLHttpRequest object
