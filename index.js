@@ -1,13 +1,8 @@
 "use strict";
-// function that handles the submission of the form using ajax request
-//TODO
-/*
-1)
-username validation not empty
-2)
-birthdate validation not empty
-3)
-change api key
+/* (1) -> VALIDATION FUNCTIONS
+  (2) -> FORM SUBMISSION AJAX REQUEST
+  (3) -> ACTORS BORN BUTTON SUBMISSION AJAX REQUEST
+  (4) -> EVENT LISTENERS ON EVERY FIELD THAT IS MANDATORY TO CHECK IF ITS VALID OR NOT (ALL FIELDS ARE MANDATORY)
 */
 const fullName = document.getElementById("full_name");
 const username = document.getElementById("user_name");
@@ -19,6 +14,7 @@ const confirm_password = document.getElementById("confirm_password");
 const userImage = document.getElementById("user_image");
 const emailAddress = document.getElementById("email");
 
+// opens and closes submit button
 const switchButton = function (choice) {
   const myButton = document.getElementById("submit");
   if (choice == 1) {
@@ -32,6 +28,13 @@ const switchButton = function (choice) {
   }
 };
 
+/**********************************(1)*********************************/
+
+// -------------------- VALIDATION FUNCTIONS ----------------------------
+
+/*----------- ALL VALIDATION FUNCTIONS RETURN TRUE OR FALSE */
+
+// FULL NAME VALIDATION FUNCTION
 const fullNameValidation = function () {
   const full_name = fullName.value.trim();
   if (full_name.length == 0) return false;
@@ -51,6 +54,7 @@ const fullNameValidation = function () {
   return true;
 };
 
+//USERNAME VALIDATION FUNCTION
 const userNameValidation = function () {
   if (username.value.length == 0) return false;
   for (let i = 0; i < username.value.length; i++) {
@@ -58,6 +62,8 @@ const userNameValidation = function () {
   }
   return true;
 };
+
+//BIRTHDATE VALIDATION FUNCTION
 const birthValidation = function () {
   if (birthdate.value.trim() === "") {
     return false;
@@ -65,6 +71,7 @@ const birthValidation = function () {
   return true;
 };
 
+// PHONE NUMBER VALIDATION FUNCTION
 const phoneNumberValidation = function () {
   let response = 1;
   if (phoneNumber.value.length < 11 || phoneNumber.value.length > 15)
@@ -87,16 +94,19 @@ const phoneNumberValidation = function () {
   return response;
 };
 
+// EMAIL VALIDATION FUNCTION
 const EmailValidation = function () {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return regex.test(emailAddress.value) && emailAddress.value.trim() != "";
 };
 
+// ADDRESS VALIDATION FUNCTION
 const addressValidation = function () {
   if (address.value.trim() == "") return false;
   return true;
 };
 
+//USER IMAGE VALIDATION FUNCTION
 const userImageValidation = function () {
   if (userImage.files.length == 0) return -1;
   else {
@@ -120,6 +130,64 @@ const userImageValidation = function () {
     }
   }
 };
+
+// validate password and confirm password fields
+function validatePassword() {
+  var flag = true;
+
+  const passwordLengthCheck = document.getElementById("password_length_check");
+  const passwordNumberCheck = document.getElementById("password_number_check");
+  const passwordSpecialCheck = document.getElementById(
+    "password_special_check"
+  );
+  const passwordMatchCheck = document.getElementById("password_match_check");
+
+  // Password is at least 8 characters long
+  if (password.value.length < 8) {
+    passwordLengthCheck.innerHTML = "&#x2718;";
+    passwordLengthCheck.style.color = "red";
+    flag = false;
+  } else {
+    passwordLengthCheck.innerHTML = "&#x2714;";
+    passwordLengthCheck.style.color = "green";
+  }
+
+  // Password includes at least one digit
+  var digitRegex = /(?=.*\d)/;
+  if (!digitRegex.test(password.value)) {
+    passwordNumberCheck.innerHTML = "&#x2718;";
+    passwordNumberCheck.style.color = "red";
+    flag = false;
+  } else {
+    passwordNumberCheck.innerHTML = "&#x2714;";
+    passwordNumberCheck.style.color = "green";
+  }
+
+  // Password includes at least one special character
+  var sRegex = /(?=.*[!@#$%^&*_/])/;
+  if (!sRegex.test(password.value)) {
+    passwordSpecialCheck.innerHTML = "&#x2718;";
+    passwordSpecialCheck.style.color = "red";
+    flag = false;
+  } else {
+    passwordSpecialCheck.innerHTML = "&#x2714;";
+    passwordSpecialCheck.style.color = "green";
+  }
+
+  if (password.value !== confirm_password.value || password.value.length == 0) {
+    passwordMatchCheck.innerHTML = "&#x2718;";
+    passwordMatchCheck.style.color = "red";
+    flag = false;
+  } else {
+    passwordMatchCheck.innerHTML = "&#x2714;";
+    passwordMatchCheck.style.color = "green";
+  }
+
+  // Password is valid
+  return flag;
+}
+
+// USED IN FORM SUBMISSION FUNCTION TO MAKE SURE THAT ALL FIELDS OF THE FORM ARE VALID BEFORE SUBMITTING TO THE SERVER
 const validateAllFields = function () {
   return (
     fullNameValidation() &&
@@ -130,57 +198,71 @@ const validateAllFields = function () {
     EmailValidation() &&
     addressValidation() &&
     userImageValidation() == 1
-  )
+  );
 };
+
+/**********************************(2)*********************************/
+
+// -------------------- FORM SUBMISSION FUNCTION (USING AJAX REQUEST) ----------------------------
+
+/*----------- THIS FUNCTION SHOWS AN NOTIFICATION IN INDEX.PHP ON RECIEVING RESPONSE FROM THE SERVER */
+
 const submitForm = function () {
+  // MAKING SURE ALL FIELDS ARE VALID
   if (validateAllFields()) {
     const form = document.getElementById("my-form");
-    event.preventDefault(); // prevent the form from submitting normally
-    // create a new XMLHttpRequest object
+
     const xhr = new XMLHttpRequest();
 
-    // configure the request
     xhr.open("POST", "index.php");
-    // set the callback function to handle the response
+
+    xhr.send(new FormData(form));
+
     xhr.onload = function () {
-      debugger;
       if (xhr.status === 200) {
         let resp = JSON.parse(xhr.response);
         let notify = document.getElementById("notify");
-        if (resp["response"] == 1) {
+
+        if (resp["response"] == 1)
+          //good news
           notify.innerHTML = `<div class="alert alert-success alert-dismissible fade show" role="alert" style="width:22%;z-index:2;">User registered successfully!<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
-        } else if (resp["response"] == -1)
+        else if (resp["response"] == -1)
+          //error in database
           notify.innerHTML = `<div class="alert alert-danger alert-dismissible fade show" role="alert" style="width:22%; z-index:2;">Error in registration try again!<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
-        else if (resp["response"] == -2) {
+        else if (resp["response"] == -2)
+          //bad news
           notify.innerHTML = `<div class="alert alert-danger alert-dismissible fade show" role="alert" style="width:22%; z-index:2;">Username already exists!<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
-        }
       }
     };
-
-    // send the request with the form data
-    xhr.send(new FormData(form));
-  } else {
-    notify.innerHTML = `<div class="alert alert-danger alert-dismissible fade show" role="alert" style="width:22%; z-index:2;">Fill all required fields!<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
   }
+  // validateAllFields returned false
+  else
+    notify.innerHTML = `<div class="alert alert-danger alert-dismissible fade show" role="alert" style="width:22%; z-index:2;">Fill all required fields!<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+  // return to top of the page to see notification
   window.scrollTo(0, 0);
 };
 
-const getActors = function () {
-  //debugger
-  event.preventDefault(); // prevent the form from submitting normally
+/**********************************(3)*********************************/
 
+// -------------------- ACTORS BORN FUNCTION (USING AJAX REQUEST) ----------------------------
+
+/*----------- THIS FUNCTION RENDERS POPUP.HTML AND SHOWS ALL ACTORS BORN ON THE SAME DAY AND MONTH THE USER ENTERED */
+
+const getActors = function () {
   var xhttp = new XMLHttpRequest();
 
   if (birthValidation()) {
+    // check if birthdate is entered
+
+    // if an error appeared before remove it now
     if (document.getElementById("birthDate_error")) {
       document.getElementById("birthDate_error").remove();
     }
 
     const birthdate = document.getElementById("birthdate").value;
-    // Create a new Date object using the date string
+
     var date = new Date(birthdate);
 
-    // Extract the month, and day values from the Date object
     var month = date.getMonth() + 1; // Add 1 because getMonth() returns values from 0 to 11
     var day = date.getDate();
     console.log(month);
@@ -189,13 +271,13 @@ const getActors = function () {
 
     let path = "popup.html";
     let HTMLurl = window.location.href + path;
+
     let popup = window.open(
       HTMLurl,
       "Actors Born on that day",
       "width=400,height=600"
     );
 
-    // debugger;
     xhttp.open("GET", url, true);
     xhttp.send();
 
@@ -213,11 +295,12 @@ const getActors = function () {
       }
     };
   } else {
+    // if birth validation returns false show error message to indicate its required
     const errorMessage = document.createElement("p");
     errorMessage.textContent = "BirthDate is required!";
     errorMessage.style.color = "red";
     errorMessage.style.font = "14px";
-    // check if an error message already appeared
+    //remove old error if it exists and show it again
     if (document.getElementById("birthDate_error")) {
       document.getElementById("birthDate_error").remove();
     }
@@ -229,10 +312,13 @@ const getActors = function () {
   }
 };
 
-// validating phone number
+/**********************************(4)*********************************/
+
+/*-------------------- EVENT LISTENERS ON ALL FIELDS (USING AJAX REQUEST) ----------------------------*/
+
+/*----------- EVENT LISTENERS USED TO DETECT INVALID INPUT ON ALL FIELDS THEN SHOW AN ERROR MESSAGE SPECIFYING WHAT IS EXACTLY WRONG  -----------------------------------*/
 
 phoneNumber.addEventListener("blur", function () {
-  debugger;
   let result = phoneNumberValidation();
 
   const errorMessage = document.createElement("p");
@@ -375,62 +461,6 @@ address.addEventListener("blur", () => {
     }
   }
 });
-
-// validate password
-function validatePassword() {
-  var flag = true;
-
-  const passwordLengthCheck = document.getElementById("password_length_check");
-  const passwordNumberCheck = document.getElementById("password_number_check");
-  const passwordSpecialCheck = document.getElementById(
-    "password_special_check"
-  );
-  const passwordMatchCheck = document.getElementById("password_match_check");
-
-  // Password is at least 8 characters long
-  if (password.value.length < 8) {
-    passwordLengthCheck.innerHTML = "&#x2718;";
-    passwordLengthCheck.style.color = "red";
-    flag = false;
-  } else {
-    passwordLengthCheck.innerHTML = "&#x2714;";
-    passwordLengthCheck.style.color = "green";
-  }
-
-  // Password includes at least one digit
-  var digitRegex = /(?=.*\d)/;
-  if (!digitRegex.test(password.value)) {
-    passwordNumberCheck.innerHTML = "&#x2718;";
-    passwordNumberCheck.style.color = "red";
-    flag = false;
-  } else {
-    passwordNumberCheck.innerHTML = "&#x2714;";
-    passwordNumberCheck.style.color = "green";
-  }
-
-  // Password includes at least one special character
-  var sRegex = /(?=.*[!@#$%^&*_/])/;
-  if (!sRegex.test(password.value)) {
-    passwordSpecialCheck.innerHTML = "&#x2718;";
-    passwordSpecialCheck.style.color = "red";
-    flag = false;
-  } else {
-    passwordSpecialCheck.innerHTML = "&#x2714;";
-    passwordSpecialCheck.style.color = "green";
-  }
-
-  if (password.value !== confirm_password.value || password.value.length == 0) {
-    passwordMatchCheck.innerHTML = "&#x2718;";
-    passwordMatchCheck.style.color = "red";
-    flag = false;
-  } else {
-    passwordMatchCheck.innerHTML = "&#x2714;";
-    passwordMatchCheck.style.color = "green";
-  }
-
-  // Password is valid
-  return flag;
-}
 
 password.addEventListener("blur", function () {
   if (validatePassword()) {
