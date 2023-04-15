@@ -267,7 +267,7 @@ const getActors = function () {
     var day = date.getDate();
     console.log(month);
 
-    var url = "API_Ops.php?month=" + month + "&day=" + day;
+    var url = "APIController.php?month=" + month + "&day=" + day;
 
     let path = "popup.html";
     let HTMLurl = window.location.href + path;

@@ -4,19 +4,15 @@ class API_Handler
     private $month;
     private $day;
 
-    function __construct()
+    function __construct($month, $day)
     {
-        if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-            $this->month = $_GET['month'];
-            $this->day = $_GET['day'];
-
-            $this->getActorsData($this->month, $this->day);
-        }
+        $this->month = $month;
+        $this->day = $day;
     }
-    public function getActorsData($month, $day)
+    public function getActorsData()
     {
 
-        $actorsIDs = json_decode($this->getActorsIDs($month, $day), true);
+        $actorsIDs = json_decode($this->getActorsIDs(), true);
         $IDs = [];
 
         foreach ($actorsIDs as $value) {
@@ -63,12 +59,12 @@ class API_Handler
 
         echo json_encode($data);
     }
-    private function getActorsIDs($month, $day)
+    private function getActorsIDs()
     {
         $curl = curl_init();
 
         curl_setopt_array($curl, [
-            CURLOPT_URL => "https://online-movie-database.p.rapidapi.com/actors/list-born-today?month=" . $month . "&day=" . $day,
+            CURLOPT_URL => "https://online-movie-database.p.rapidapi.com/actors/list-born-today?month=" . $this->month . "&day=" . $this->day,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_ENCODING => "",
